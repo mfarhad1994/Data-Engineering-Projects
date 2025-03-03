@@ -1,10 +1,12 @@
 # Ingesting Data to PostgreSQL
 
-# Setting Up PostgreSQL with Docker
+## Setting Up PostgreSQL with Docker
 
-# We will see how to set up and run PostgreSQL locally using Docker and Docker Compose.
-# We'll cover environment configuration, volume mapping, and database access.
+### We will see how to set up and run PostgreSQL locally using Docker and Docker Compose.
+### We'll cover environment configuration, volume mapping, and database access.
 Docker-compose is a way of running multiple docker images. We want to use this code for running Postgres locally, we put this code in a new file in Visual Studio Code.
+
+```bash
 services:
   postgres:
     image: postgres:13  # Using PostgreSQL version 13
@@ -19,16 +21,20 @@ services:
       interval: 5s  # Health check interval
       retries: 5  # Maximum retries
     restart: always  # Ensure service restarts on failure
+```
+
+---
 
 # Running PostgreSQL using Docker
 # To run the PostgreSQL container, execute the following command:
-Now, I need to formulate a command to start PostgreSQL. In Docker, we use the ´docker run´ command to execute a container. We have an image, ´postgres:13´, which specifies both the software and its version. Additionally, we need to configure PostgreSQL.
+Now, I need to formulate a command to start PostgreSQL. In Docker, we use the `docker run` command to execute a container. We have an image, `postgres:13`, which specifies both the software and its version. Additionally, we need to configure PostgreSQL.
 Configuration in Docker is achieved using environment variables. These variables allow us to define specific settings for the container. In this case, we need to specify the database user, the corresponding password, and the database name.
-To set environment variables when running a container with ´docker run´, we use the ´-e´ flag, followed by the parameter and its assigned value. For this demonstration, I will set the user as ´root´, the password as ´root´, and name the database **db_data**, as this will be the dataset we use for practicing SQL.
+To set environment variables when running a container with `docker run`, we use the `-e` flag, followed by the parameter and its assigned value. For this demonstration, I will set the user as `root`, the password as `root`, and name the database **db_data**, as this will be the dataset we use for practicing SQL.
 **Volumes** in Docker enable mapping a folder from the host machine's file system to a folder inside the container. Since PostgreSQL is a database, it must store data persistently. By default, Docker containers do not retain state between runs, meaning that without volume mapping, all stored data would be lost upon restarting the container. To ensure data persistence, we need to mount a directory from our host machine to a directory within the container. This process is known as **mounting**.
-To achieve this, I will create a folder named **data_postgres** in Visual Studio Code and map it to ´/var/lib/postgresql/data´ within the container. The -v flag is used for volume mounting, followed by the path on the host machine and the corresponding path inside the container. Docker needs full windows-like path ´c:/Users/Farhad_Mustafayev/Documents/dataengineering/basics_setup/docker_s/data_postgres´. For linux, you can do ´-v $(pwd) /data_postgres:/var/lib/postgresql/data \´.
-Additionally, we need to expose PostgreSQL’s default port to allow external access. This is necessary to send SQL queries to the database and receive responses. We achieve this by mapping a port on the host machine to the PostgreSQL port inside the container using the ´-p´ flag, specifically ´-p 5432:5432´.
+To achieve this, I will create a folder named **data_postgres** in Visual Studio Code and map it to `/var/lib/postgresql/data` within the container. The -v flag is used for volume mounting, followed by the path on the host machine and the corresponding path inside the container. Docker needs full windows-like path `c:/Users/Farhad_Mustafayev/Documents/dataengineering/basics_setup/docker_s/data_postgres`. For linux, you can do `-v $(pwd) /data_postgres:/var/lib/postgresql/data \`.
+Additionally, we need to expose PostgreSQL’s default port to allow external access. This is necessary to send SQL queries to the database and receive responses. We achieve this by mapping a port on the host machine to the PostgreSQL port inside the container using the `-p` flag, specifically `-p 5432:5432`.
 
+```bash
 docker run -it \
   -e POSTGRES_USER="root" \
   -e POSTGRES_PASSWORD="root" \
@@ -37,12 +43,16 @@ docker run -it \
   -p 5432:5432 \
   postgres:13
 
+```
+
 # Explanation:
 # - `-e` flags define environment variables (user, password, database name).
 # - `-v` flag maps a host directory to the container's PostgreSQL data directory.
 # - `-p` maps port 5432 from the container to the host, allowing external connections.
 
 # Linux Alternative:
+
+```bash
 docker run -it \
   -e POSTGRES_USER="root" \
   -e POSTGRES_PASSWORD="root" \
@@ -50,6 +60,7 @@ docker run -it \
   -v $(pwd)/data_postgres:/var/lib/postgresql/data \
   -p 5432:5432 \
   postgres:13
+```
 
 # Verifying Persistent Storage:
 # After running the container, check the `data_postgres` folder in Visual Studio Code.
@@ -71,12 +82,15 @@ Using `pgcli`, I can connect to the database and execute queries. To establish a
 ```bash
 pgcli -h localhost -p 5432 -u root -d db_data
 ```
-# Expected output:
-# root@localhost:db_data>
-
-# Checking Database Contents:
+### Expected output:
+```bash
+root@localhost:db_data>
+```
+### Checking Database Contents:
+```bash
 root@localhost:db_data> \dt  # List tables (empty initially)
 root@localhost:db_data> SELECT 1;  # Test query
+```
 
 Next, we will open another Git Bash terminal to use **Jupyter Notebook**, as I intend to load and manipulate the dataset using Python. Since the dataset is in **Parquet** format, I need the **PyArrow** library. Consequently, the **Dockerfile** must be modified to include the necessary dependencies.
 
@@ -137,29 +151,35 @@ To establish the connection to PostgreSQL, I need to specify:
 Once the connection is established, we can proceed with loading the dataset into PostgreSQL. However, given the large size of the dataset, inserting all rows at once may not be efficient. Instead, we will **batch-process** the data by splitting it into smaller chunks using Pandas **iterators**. This approach allows for efficient insertion while preventing performance bottlenecks.
 
 
-insert_data:
-  - Test batch processing:
-      code: |
-        batches_iter = file.iter_batches(batch_size=100000)
-        df = next(batches_iter).to_pandas()
-        df
-      description: "Uses Pandas iterators to create smaller batches of data before inserting into PostgreSQL."
-  - Create an empty table:
-      code: |
-        df.head(0).to_sql(name='data_in_postgres_d', con=engine, if_exists='replace')
-      description: "Creates the table schema in PostgreSQL without inserting data."
-  - Insert data in batches:
-      code: |
-        t_start = time()
-        count = 0
-        for batch in file.iter_batches(batch_size=100000):
-            count += 1
-            batch_df = batch.to_pandas()
-            print(f'inserting batch {count}...')
-            b_start = time()
-            batch_df.to_sql(name='data_in_postgres_d', con=engine, if_exists='append')
-            b_end = time()
-            print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\n')
-        t_end = time()
-        print(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')
-      description: "Inserts data in smaller batches to avoid performance issues with large datasets."
+### insert_data:
+### Test batch processing:
+```python
+batches_iter = file.iter_batches(batch_size=100000)
+df = next(batches_iter).to_pandas()
+```
+
+description: "Uses Pandas iterators to create smaller batches of data before inserting into PostgreSQL.
+
+```python
+df.head(0).to_sql(name='data_in_postgres_d', con=engine, if_exists='replace') # Create an empty table:
+``` 
+
+description: "Creates the table schema in PostgreSQL without inserting data."
+
+### insert data in batches
+
+```python
+t_start = time()
+count = 0
+for batch in file.iter_batches(batch_size=100000):
+    count += 1
+    batch_df = batch.to_pandas()
+    print(f'inserting batch {count}...')
+    b_start = time()
+    batch_df.to_sql(name='data_in_postgres_d', con=engine, if_exists='append')
+    b_end = time()
+    print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\n')
+t_end = time()
+print(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')
+```
+description: "Inserts data in smaller batches to avoid performance issues with large datasets."
