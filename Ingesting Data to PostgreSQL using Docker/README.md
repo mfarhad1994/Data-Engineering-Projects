@@ -3,6 +3,11 @@
 ## Setting Up PostgreSQL with Docker
 
 ### We will see how to set up and run PostgreSQL locally using Docker.
+
+!(./Untitled Diagram.drawio.png)
+
+
+
 ### We'll cover environment configuration, volume mapping, and database access.
 
 
