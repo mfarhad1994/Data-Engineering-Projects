@@ -83,6 +83,7 @@ Host vminst1-de
     HostName 34.140.233.83
     User farhad
     IdentityFile c:/Users/gunay/.ssh/gpc
+```
 
 Then we initialize anaconda and check if it is in .bashrc:
 
