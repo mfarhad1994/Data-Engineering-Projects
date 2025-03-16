@@ -437,3 +437,62 @@ Key Achievements:
 -	The conditional `if` statements determine whether the workflow should execute the yellow or green dataset, preventing unnecessary task execution when no relevant data is available.
 -	The workflow proceeds with executing multiple SQL queries, but instead of redundantly specifying connection properties for each query, we use plugin defaults. This approach not only prevents repetition but also simplifies modifications should we transition to a different PostgreSQL database in the future.
 -	Finally, all processed data is merged into the target table without introducing duplicates, thanks to the unique identifier generated using an MD5 hash.
+
+
+
+# Manage Scheduling and Backfills with Postgres
+
+We can now begin utilizing **schedules** and **backfills** to automate our pipeline. Up to this point, we have built a PostgreSQL pipeline capable of creating both a main table and a staging table. Now, we will explore how to automate this process using scheduling and how to apply backfills for any missed executions in the past.
+
+This time, our workflow follows a slightly different structure. The only required input is the type of taxi service. Previously, we also needed the month and year, but this is no longer necessary since the **trigger** will automatically handle those parameters.
+
+```bash
+inputs:
+  - id: taxi
+    type: SELECT
+    displayName: Select taxi type
+    values: [yellow, green]
+    defaults: yellow
+```
+
+Examining the **variables**, we see that instead of manually specifying inputs, we are now retrieving the date directly from the trigger. The trigger, in this case, refers to the schedule that will execute this process automatically. Let’s take a closer look at how this trigger operates.
+
+```bash
+triggers:
+  - id: green_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 1 * *"
+    inputs:
+      taxi: green
+
+  - id: yellow_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 10 1 * *"
+    inputs:
+      taxi: yellow
+```
+
+We have two triggers in place. The schedule is configured to execute the workflow on the first day of every month—once at 9:00 AM and again at 10:00 AM. This scheduling is managed via a Cron expression, ensuring execution aligns with the monthly data availability from New York taxis. With this in place, the process runs autonomously. However, since our data is from 2019 and 2020, automation alone is insufficient for historical data processing. This is where backfills become essential, allowing us to retroactively process missing records.
+
+Navigating to the **triggers** section, we can initiate a backfill execution. This feature enables us to backdate the execution and process data for all previously unrecorded time periods. Given our requirement to process data from 2019 while working in 2025, we can execute backfills by selecting **"Backfill Executions"** , specifying the relevant timeframe, and labeling the process for clarity. For this example, we will process four months from 2019. After executing the backfill, we can monitor the execution logs to verify the specific files being processed. Refreshing our tables in **pgAdmin** confirms the successful ingestion of both the "green trip data" and its corresponding staging table.
+
+It is important to note that these executions must be run sequentially, as we currently have only one staging table. If we intend to process multiple months simultaneously, we should create separate staging tables for each period.
+
+```bash
+variables:
+  file: "{{inputs.taxi}}_tripdata_{{trigger.date | date('yyyy-MM')}}.csv"
+  staging_table: "public.{{inputs.taxi}}_tripdata_staging"
+  table: "public.{{inputs.taxi}}_tripdata"
+  data: "{{outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ (trigger.date | date('yyyy-MM')) ~ '.csv']}}"
+```
+
+For instance, rather than using a generic `staging` table name, we could incorporate the `trigger.date` parameter to dynamically generate unique table names such as "`tripdata_staging_{date}.` This approach would allow concurrent executions without conflicts. However, since we have set a concurrency limit of 1, the system ensures that only one execution runs at a time, preventing simultaneous writes to the same staging table.
+
+```bash
+concurrency:
+  limit: 1
+```
+
+This is particularly crucial because our workflow includes a truncation step. If one execution truncates the table while another is attempting to insert unique IDs, it could lead to inconsistencies and failures in PostgreSQL. While one solution is to generate distinct tables for each month, this can result in an excessive number of tables, particularly for large backfill operations. For example, backfilling both 2019 and 2020 would create a significant number of tables, many of which may not be useful in the long term. Instead of merely truncating them, a more efficient approach would be to drop these tables once the backfill process is complete.
+
+Verifying in pgAdmin, we can confirm that the pipeline has successfully processed and stored data for four months from 2019.
