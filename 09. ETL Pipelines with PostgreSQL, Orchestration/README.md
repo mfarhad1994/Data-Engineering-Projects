@@ -1,7 +1,7 @@
 # Understanding Workflow Orchestration with Kestra
 
 
-![Diagram](09etlpipelineswith postgresql.png)
+![Diagram](09etlpipelineswithpostgresql.png)
 
 
 ## What is Orchestration?
