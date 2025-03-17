@@ -277,7 +277,7 @@ This structured approach ensures seamless data ingestion, transformation, and st
     -	If false, it proceeds to check for green taxis and processes them accordingly.
 -	Upon completion, the system purges unnecessary CSV files from Kestra executions to prevent excessive storage consumption.
 
-The steps that have not been mentioned here are the same as [Go to 09. ETL Pipelines with PostgreSQL, Orchestration](https://github.com/mfarhad1994/Data-Engineering-Projects/tree/main/09.%20ETL%20Pipelines%20with%20Post).
+The steps that have not been mentioned here are the same as [Go to 09. ETL Pipelines with PostgreSQL, Orchestration](https://github.com/mfarhad1994/Data-Engineering-Projects/tree/main/09.%20ETL%20Pipelines%20with%20PostgreSQL%2C%20Orchestration).
 
 # Scheduling and Backfills 
 
