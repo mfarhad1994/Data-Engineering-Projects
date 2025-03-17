@@ -22,7 +22,7 @@ Each workflow in Kestra is structured using an **ID** and a **namespace**, which
 
 
 ```bash
-id: 01_getting_started_data_pipeline
+id: getting_started_data_pipeline
 namespace: farhad_mustafayev_kestra_proj
 
 inputs:
@@ -108,7 +108,7 @@ This dataset is structured by month, meaning new data becomes available every mo
 
 
 ```bash
-id: 02_postgres_taxi
+id: postgres_taxi
 namespace: farhad_mustafayev_kestra_proj
 ```
 
