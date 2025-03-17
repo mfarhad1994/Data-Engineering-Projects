@@ -1,7 +1,7 @@
 # ETL Pipelines on Google Cloud Platform and BigQuery
 
 
-Today, we will explore how to transition our existing **ETL pipeline** [Go to 02. Ingesting Data to PostgreSQL using Docker](02.%20Ingesting%20Data%20to%20PostgreSQL%20using%20Docker/README.md)
+Today, we will explore how to transition our existing **ETL pipeline** [Go to 02. Ingesting Data to PostgreSQL using Docker](02.%20Ingesting%20Data%20to%20PostgreSQL%20using%20Docker)
  to **Google Cloud** using **Google Cloud Storage (GCS)** and **BigQuery**. To begin, we must first set up our environment on **Google Cloud** before integrating our pipeline, our objective is to extract data from a CSV file—similar to our previous **PostgreSQL** example—but instead of loading it into PostgreSQL, we will upload it to a **data lake**, specifically **Google Cloud Storage**. This serves as a staging area where the CSV file will be stored, ready for processing within Google Cloud.
 
 Once the file is in **GCS**, **BigQuery** can automatically create a table from it, allowing us to start processing and querying the data. Our workflow remains similar to the previous approach: we maintain a staging table and a final table, merging monthly data into the main table for consolidated storage. However, the key difference here is that we leverage **cloud computing**, enabling us to process significantly larger datasets efficiently.
@@ -278,7 +278,7 @@ This structured approach ensures seamless data ingestion, transformation, and st
     -	If false, it proceeds to check for green taxis and processes them accordingly.
 -	Upon completion, the system purges unnecessary CSV files from Kestra executions to prevent excessive storage consumption.
 
-The steps that have not been mentioned here are the same as [Go to 02. Ingesting Data to PostgreSQL using Docker](02.Ingesting%20Data%20to%20PostgreSQL%20using%20Docker/README.md).
+The steps that have not been mentioned here are the same as [Go to 02. Ingesting Data to PostgreSQL using Docker](02.%20Ingesting%20Data%20to%20PostgreSQL%20using%20Docker).
 
 # Scheduling and Backfills 
 
