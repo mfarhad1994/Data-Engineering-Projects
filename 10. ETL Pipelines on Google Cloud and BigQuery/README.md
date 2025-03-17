@@ -1,5 +1,6 @@
 # ETL Pipelines on Google Cloud Platform and BigQuery
 
+![Diagram](10.ETLPipelinesonGoogleCloudandBigQuery)
 
 Today, we will explore how to transition our existing **ETL pipeline** [Go to 09. ETL Pipelines with PostgreSQL, Orchestration](https://github.com/mfarhad1994/Data-Engineering-Projects/tree/main/09.%20ETL%20Pipelines%20with%20PostgreSQL%2C%20Orchestration) to **Google Cloud** using **Google Cloud Storage (GCS)** and **BigQuery**. To begin, we must first set up our environment on **Google Cloud** before integrating our pipeline, our objective is to extract data from a CSV file—similar to our previous **PostgreSQL** example—but instead of loading it into PostgreSQL, we will upload it to a **data lake**, specifically **Google Cloud Storage**. This serves as a staging area where the CSV file will be stored, ready for processing within Google Cloud.
 

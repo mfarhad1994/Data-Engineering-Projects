@@ -1,5 +1,9 @@
 # Understanding Workflow Orchestration with Kestra
 
+
+![Diagram](09etlpipelineswith postgresql.png)
+
+
 ## What is Orchestration?
 
 Before diving into workflow orchestration, let’s first define what orchestration actually means. A useful analogy is that of a musical orchestra. In an orchestra, various instruments—violins, trumpets, flutes—each produce distinct sounds and must be played at precise moments. Some instruments play simultaneously, while others come in at different times, all guided by a conductor ensuring harmony.
