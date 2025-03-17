@@ -1,7 +1,7 @@
 # ETL Pipelines on Google Cloud Platform and BigQuery
 
 
-Today, we will explore how to transition our existing **ETL pipeline** ([Go to 2. Ingesting Data to PostgreSQL using Docker](2. Ingesting Data to PostgreSQL using Docker/README.md)) to **Google Cloud** using **Google Cloud Storage (GCS)** and **BigQuery**. To begin, we must first set up our environment on **Google Cloud** before integrating our pipeline, our objective is to extract data from a CSV file—similar to our previous **PostgreSQL** example—but instead of loading it into PostgreSQL, we will upload it to a **data lake**, specifically **Google Cloud Storage**. This serves as a staging area where the CSV file will be stored, ready for processing within Google Cloud.
+Today, we will explore how to transition our existing **ETL pipeline** [Go to 02. Ingesting Data to PostgreSQL using Docker](02. %20Ingesting%20Data%20to%20PostgreSQL%20using%20Docker/README.md) to **Google Cloud** using **Google Cloud Storage (GCS)** and **BigQuery**. To begin, we must first set up our environment on **Google Cloud** before integrating our pipeline, our objective is to extract data from a CSV file—similar to our previous **PostgreSQL** example—but instead of loading it into PostgreSQL, we will upload it to a **data lake**, specifically **Google Cloud Storage**. This serves as a staging area where the CSV file will be stored, ready for processing within Google Cloud.
 
 Once the file is in **GCS**, **BigQuery** can automatically create a table from it, allowing us to start processing and querying the data. Our workflow remains similar to the previous approach: we maintain a staging table and a final table, merging monthly data into the main table for consolidated storage. However, the key difference here is that we leverage **cloud computing**, enabling us to process significantly larger datasets efficiently.
 
@@ -156,7 +156,7 @@ At this point, executing the workflow with an example input—such as Green Taxi
 To process the CSV file in **BigQuery**, we need to create a table. This process is similar to setting up a table in PostgreSQL but involves defining a schema that aligns with our CSV data.
 
 -	We define a main table where multiple CSV files will be merged.
--	The schema includes key attributes such as a unique row ID, file name, and other fields present in the CSV.
+-	The schema includes key attributes such as a `unique_row_id`, `filename`, and other fields present in the CSV.
 -	The data types for each field are referenced from the BigQuery documentation.
 
 ```bash
@@ -173,7 +173,7 @@ Upon execution, the workflow:
 1.	Uploads the file to GCS.
 2.	Creates a new table in BigQuery based on the predefined schema.
 
-Refreshing BigQuery will confirm the creation of a new table, Green_trip_data, within our dataset.
+Refreshing BigQuery will confirm the creation of a new table, green_tripdata, within our dataset.
 
 ## Staging Table for Data Loading
 
@@ -194,16 +194,16 @@ Before merging data into the main table, we first load it into a staging table�
           );
 ```
 
-This intermediate table lacks attributes like unique row IDs and file names, ensuring that it exactly mirrors the CSV file structure.
+This intermediate table lacks attributes like `unique_row_IDs` and `filenames`, ensuring that it exactly mirrors the CSV file structure.
 The process involves:
 1.	Loading the CSV file into the staging table.
-2.	Adding unique attributes (such as a unique row ID and file name) within BigQuery.
+2.	Adding unique attributes (such as a `unique_row_ID` and `filename`) within BigQuery.
 3.	Merging the staged data into the main table.
 Since the data is already present in GCS, no additional uploads are required. Upon execution, we can verify that both the staging and main tables exist in BigQuery, with data correctly mapped. The staging table serves as a bridge, ensuring proper structuring before integration into the main dataset.
 
 ## Merging Data into the Main Table
 
-The next step involves merging the newly processed data into Green_trip_data. This task:
+The next step involves merging the newly processed data into green_tripdata. This task:
 -	Generates a unique identifier using specific column values.
 -	Ensures duplicate records are not introduced in future uploads.
 -	Incorporates the file name attribute for traceability.
@@ -229,7 +229,7 @@ The next step involves merging the newly processed data into Green_trip_data. Th
 
 Upon execution, the temporary table is updated with these new values. Refreshing BigQuery will reveal the presence of additional columns—confirming the enhancement of our dataset.
 
-Now, the workflow merges this enriched data into Green_trip_data, eliminating redundant tables such as green_tripdata_2019_01 and green_tripdata_2019_01_ext.
+Now, the workflow merges this enriched data into green_tripdata, eliminating redundant tables such as green_tripdata_2019_01 and green_tripdata_2019_01_ext.
 
 
 ## Implementing Conditional Logic for Multiple Datasets
@@ -251,7 +251,7 @@ To accommodate both green and yellow taxi datasets—each with a slightly differ
 
 ## Finalizing the Workflow
 
-The final step involves merging the project ID and dataset for Green_trip_data, ensuring alignment with the staged dataset containing the unique values.
+The final step involves merging the project ID and dataset for green_tripdata, ensuring alignment with the staged dataset containing the unique values.
 Executing this step consolidates all structured data within the main table. 
 
 ```bash
@@ -277,12 +277,13 @@ This structured approach ensures seamless data ingestion, transformation, and st
     -	If false, it proceeds to check for green taxis and processes them accordingly.
 -	Upon completion, the system purges unnecessary CSV files from Kestra executions to prevent excessive storage consumption.
 
-The steps that have not been mentioned here are the same as [Go to 2. Ingesting Data to PostgreSQL using Docker](2. Ingesting Data to PostgreSQL using Docker/README.md).
+The steps that have not been mentioned here are the same as [Go to 02. Ingesting Data to PostgreSQL using Docker](02. %20Ingesting%20Data%20to%20PostgreSQL%20using%20Docker/README.md).
 
+# Scheduling and Backfills 
 
-We will explore how to integrate scheduling into our BigQuery workflow and subsequently perform backfills for data from 2019. Previously, our workflow allowed users to manually select dates using an input mechanism, enabling the selection of years (2019 and 2020) and corresponding months via a dropdown menu. However, we are now replacing this manual selection with an automated trigger that will handle both the green and yellow datasets, ensuring seamless execution. Additionally, we will perform backfills to retroactively populate missing data for previous months.
+We will explore how to integrate scheduling into our **BigQuery** workflow and subsequently perform backfills for data from 2019. Previously, our workflow allowed users to manually select dates using an input mechanism, enabling the selection of years (2019 and 2020) and corresponding months via a dropdown menu. However, we are now replacing this manual selection with an automated trigger that will handle both the green and yellow datasets, ensuring seamless execution. Additionally, we will perform backfills to retroactively populate missing data for previous months.
 
-To achieve this, we introduce a slightly modified workflow that incorporates the necessary trigger.
+To achieve this, we introduce a slightly modified workflow that incorporates the necessary **trigger**.
 
 ```bash
 triggers:
@@ -301,7 +302,7 @@ triggers:
 
 Navigating to the Triggers section in Kestra, we can see that the workflows are scheduled to run at specific times: the green dataset is processed at 9:00 AM, followed by the yellow dataset at 10:00 AM. These executions occur on the first of each month, as the data is generated on a monthly basis.
 
-Our approach remains largely consistent with previous iterations. We will set execution labels to track the processed files, extract data from GitHub, and upload it to a Google Cloud Storage (GCS) data lake, where BigQuery will automatically ingest the data. The core structure of the workflow remains unchanged, including the conditional processing blocks for the green and yellow datasets, followed by a file purge operation. The primary modification lies in the expressions within the variables—where previously we relied on manually provided inputs (e.g., month/year), we now leverage the trigger mechanism for automation.
+Our approach remains largely consistent with previous iterations. We will set execution labels to track the processed files, extract data from GitHub, and upload it to a **Google Cloud Storage (GCS) data lake**, where **BigQuery** will automatically ingest the data. The core structure of the workflow remains unchanged, including the conditional processing blocks for the green and yellow datasets, followed by a file purge operation. The primary modification lies in the expressions within the variables—where previously we relied on manually provided inputs (e.g., month/year), we now leverage the trigger mechanism for automation.
 
 ```bash
 variables:
@@ -313,6 +314,6 @@ variables:
 
 This automated approach means that executing the workflow manually will no longer work as expected, since the required date parameters will not be explicitly provided. While more advanced expressions could be implemented to enable manual execution, our focus today is on utilizing backfills, which is the most effective solution in this context.
 
-By accessing the Triggers section in Kestra, we can execute backfills for both the green and yellow datasets. For instance, selecting yellow as the dataset type allows us to backfill data for the entirety of 2019. After initiating the backfill, we can label the execution accordingly to indicate that it is a historical data retrieval process. This ensures clarity when reviewing past executions.
+By accessing the **Triggers** section in Kestra, we can execute backfills for both the green and yellow datasets. For instance, selecting yellow as the dataset type allows us to backfill data for the entirety of 2019. After initiating the backfill, we can label the execution accordingly to indicate that it is a historical data retrieval process. This ensures clarity when reviewing past executions.
 
 Upon executing the backfill and refreshing our storage bucket, we should observe 12 CSV files successfully uploaded, corresponding to the full year's data.
