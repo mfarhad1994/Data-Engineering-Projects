@@ -1,7 +1,8 @@
-- [Understanding Data Warehouses: OLAP vs. OLTP, BigQuery, and Best Practices](#Understanding Data Warehouses: OLAP vs. OLTP, BigQuery, and Best Practices)
-- [Partitioning and Clustering in BigQuery](#Partitioning and Clustering in BigQuery)
-- [Best Practices for Cost Reduction](#Best Practices for Cost Reduction)
-- [Understanding the Internals of BigQuery](#Understanding the Internals of BigQuery)
+- [Understanding Data Warehouses: OLAP vs. OLTP, BigQuery, and Best Practices](#understanding-data-warehouses-olap-vs-oltp-bigquery-and-best-practices)
+- [Partitioning and Clustering in BigQuery](#partitioning-and-clustering-in-bigquery)
+- [Best Practices for Cost Reduction](#best-practices-for-cost-reduction)
+- [Understanding the Internals of BigQuery](#understanding-the-internals-of-bigquery)
+
 
 
 # Understanding Data Warehouses: OLAP vs. OLTP, BigQuery, and Best Practices
@@ -141,8 +142,6 @@ Key Aspects of Automatic Clustering:
 By leveraging partitioning and clustering appropriately, users can significantly optimize query performance, minimize costs, and enhance data retrieval efficiency in BigQuery.
 
 
-
-
 # Best Practices for Cost Reduction
 
 1. Avoid Using SELECT *
@@ -209,7 +208,8 @@ To effectively utilize BigQuery, an in-depth understanding of its internal archi
 
 ### BigQuery’s Storage Architecture: Colossus
 
-![Diagram](BigQuery’s Storage Architecture Colossus.png)
+![Diagram](bigquery-storage-architecture-colossus.png)
+
 
 BigQuery utilizes Colossus, a specialized distributed storage system, to manage its data. Colossus offers cost-effective, columnar storage, which provides significant advantages:
 -	Separation of storage and compute: Unlike traditional databases, BigQuery keeps storage and computation independent, resulting in a lower overall cost. Users primarily pay for compute resources when executing queries, while data storage remains relatively inexpensive.
@@ -246,7 +246,7 @@ This distributed execution model allows BigQuery to efficiently process enormous
 
 ### Column-Oriented vs. Record-Oriented Storage
 
-![Diagram](Column-Oriented vs. Record-Oriented Storage.png)
+![Diagram](column-criented-vs.-record-oriented_storage.png)
 
 Understanding how data is stored plays a crucial role in optimizing query performance. Traditional databases use record-oriented (row-based) storage, where data is stored sequentially for each row. In contrast, BigQuery leverages column-oriented storage, which provides several advantages:
 -	Faster Aggregations: Since data is stored column-wise, BigQuery can efficiently scan only the necessary columns, significantly improving aggregation operations.
@@ -262,7 +262,7 @@ To illustrate how Dremel processes a query, consider the following SQL statement
 SELECT A, COUNT(B) FROM your_table T GROUP BY A;
 ```
 
-![Diagram](Step-by-Step Execution of a BigQuery Query.png)
+![Diagram](step-by-step_execution_of_a_bigquery_query.png)
 
 Query Execution Breakdown:
 1.	Query Parsing:
