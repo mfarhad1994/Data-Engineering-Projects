@@ -1,5 +1,16 @@
 # ETL Pipelines on Google Cloud Platform and BigQuery
 
+## Table of Contents
+- [Understanding the Role of Google Cloud Storage and BigQuery](#understanding_the_role_of_google_cloud_storage_and_bigquery)
+- [Initializing Google Cloud Storage and BigQuery](#initializing_google_cloud_storage_and_bigquery)
+- [Workflow Overview](#workflow_overview)
+- [Creating a Table in BigQuery](#creating_a_table_in_bigquery)
+- [Staging Table for Data Loading](#staging_table_for_data_loading)
+- [Merging Data into the Main Table](#merging_data_into_the_main_table)
+- [Implementing Conditional Logic for Multiple Datasets](#implementing_conditional_logic_for_multiple_datasets)
+- [Finalizing the Workflow](#finalizing_the_workflow)
+- [Scheduling and Backfills ](#scheduling_and_backfills_)
+
 
 ![Diagram](10.ETLPipelinesonGoogleCloudandBigQuery.png)
 

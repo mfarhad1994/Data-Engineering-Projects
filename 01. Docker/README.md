@@ -1,5 +1,16 @@
 # Docker Data Pipeline
 
+## Table of Contents
+- [Understanding Docker and Containers](#understanding_docker_and_containers)
+- [Why Use Docker Containers?](#why_use_docker_containers?)
+- [Setting Up a Dockerized Environment](#setting_up_a_dockerized_environment)
+- [Running Python Inside Docker](#running_python_inside_docker)
+- [Persisting Dependencies with a Dockerfile](#persisting_dependencies_with_a_dockerfile)
+- [Adding a Python Script to the Container](#adding_a_python_script_to_the_container)
+- [Passing Command-Line Arguments to the Script](#passing_command-line_arguments_to_the_script)
+- [Conclusion](#conclusion)
+
+
 ## Understanding Docker and Containers
 
 Docker is a platform for packaging software into standardized units called **containers**. Containers are isolated environments, ensuring that applications run consistently regardless of where they are deployed.

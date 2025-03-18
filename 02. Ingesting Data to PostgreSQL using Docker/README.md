@@ -1,5 +1,11 @@
 # Ingesting Data to PostgreSQL
 
+## Table of Contents
+- [Setting Up PostgreSQL with Docker](#setting_up_postgreSQL_with_docker)
+- [Accessing PostgreSQL via CLI](#accessing_postgresql_via_cli)
+- [Load and manipulate the dataset via Jupiter Notebook](#load_and_manipulate_the_dataset_via_jupiter_notebook)
+
+
 ## Setting Up PostgreSQL with Docker
 
 ### We will see how to set up and run PostgreSQL locally using Docker.
@@ -52,13 +58,13 @@ docker run -it \
   postgres:13
 ```
 ---
-## Verifying Persistent Storage:
-### After running the container, check the `data_postgres` folder in Visual Studio Code.
+### Verifying Persistent Storage:
+#### After running the container, check the `data_postgres` folder in Visual Studio Code.
 Now, I can inspect the contents of the data_postgres folder in Visual Studio Code. Since it is mapped to the container’s data directory, we can observe that PostgreSQL has generated its required files there.
 
 ### PostgreSQL should have created data files within the mapped directory.
 ---
-## Accessing PostgreSQL via CLI:
+## Accessing PostgreSQL via CLI
 #### To interact with the database, install and use `pgcli`, a Python-based PostgreSQL client:
 Next, I will attempt to access the database. I will open a new terminal window in Git Bash and run `pgcli`, a command-line interface for interacting with PostgreSQL. If not already installed, it can be installed via `pip install pgcli`.
 

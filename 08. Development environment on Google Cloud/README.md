@@ -1,5 +1,16 @@
 # Setting up a cloud-based development environment on Google Cloud
 
+## Table of Contents
+- [Creating a VM Instance](#creating_a_vm_instance)
+- [Configuring the Instance](#configuring_the_instance)
+- [Connecting VS Code to the Remote Machine](#connecting_vs_code_to_the_remote_machine)
+- [Cloning the Repository](#cloning_the_repository)
+- [Setting Up Docker](#setting_up_docker)
+- [Running PostgreSQL and pgAdmin](#running_postgresql_and_pgadmin)
+- [Running Jupyter Notebook](#running_jupyter_notebook)
+- [Installing Terraform](#installing_terraform)
+- [Managing the VM Lifecycle](#managing_the_vm_lifecycle)
+
 
 I would like to demonstrate how to set up an environment in Google Cloud. You can simply rent a virtual machine (VM) instance on Google Cloud. 
 
@@ -38,7 +49,7 @@ Farhad_Mustafayev@farhad MINGW64 ~ $ ssh -i ~/.ssh/gpc farhad@34.140.233.83
 ```
 
 ---
-## Errors
+### Errors
 - if occurs: `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!` then:
 
 ```bash

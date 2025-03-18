@@ -1,5 +1,20 @@
 # Understanding Workflow Orchestration with Kestra
 
+## Table of Contents
+- [What is Orchestration?](#what_is_orchestration?)
+- [What is Kestra?](#what_is_kestra?)
+- [Building a Simple Workflow in Kestra](#building_a_simple_workflow_in_kestra)
+- [Defining Inputs and Execution Parameters](#defining_inputs_and_execution_parameters)
+- [Task Execution Flow](#task_execution_flow)
+- [Execution](#execution)
+- [ETL Pipelines with Postgres](#etl_pipelines_with_postgres)
+- [Defining ETL Tasks](#defining_etl_tasks)
+- [Using Variables for Dynamic Naming](#using_variables_for_dynamic_naming)
+- [Extracting the Data](#extracting_the_data)
+- [Setting Up a PostgreSQL Database with Docker](#setting_up_a_postgresql_database_with_docker)
+- [Creating Tables and Managing Data](#creating_tables_and_managing_data)
+- [Manage Scheduling and Backfills with Postgres](#manage_scheduling_and_backfills_with_postgres)
+
 
 ![Diagram](09etlpipelineswithpostgresql.png)
 
