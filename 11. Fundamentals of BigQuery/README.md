@@ -1,9 +1,10 @@
 
 ## Table of Contents
-- [Understanding Data Warehouses: OLAP vs. OLTP, BigQuery, and Best Practices](#understanding-data-warehouses-olap-vs-oltp-bigquery-and-best-practices)
-- [Partitioning and Clustering in BigQuery](#partitioning-and-clustering-in-bigquery)
-- [Best Practices for Cost Reduction](#best-practices-for-cost-reduction)
-- [Understanding the Internals of BigQuery](#understanding-the-internals-of-bigquery)
+- [Understanding Data Warehouses: OLAP vs. OLTP, BigQuery, and Best Practices](#understanding_data_warehouses:_olap_vs._oltp,_bigquery,_and_best_practices)
+- [Partitioning and Clustering in BigQuery](#partitioning_and_clustering_in_bigquery)
+- [Best Practices for Cost Reduction](#best_practices_for_cost_reduction)
+- [Understanding the Internals of BigQuery](#understanding_the_internals_of_bigquery)
+
 
 
 
