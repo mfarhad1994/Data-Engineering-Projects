@@ -10,7 +10,7 @@
 # Understanding Data Warehouses: OLAP vs. OLTP, BigQuery, and Best Practices
 
 
-In this discussion, we will explore data warehouses in depth, covering fundamental concepts such as OLAP vs. OLTP, the definition of a data warehouse, and BigQuery’s capabilities, including cost considerations, partitioning, clustering, best practices, internal workings, and machine learning applications. Let’s begin with a comparison of OLAP (Online Analytical Processing) and OLTP (Online Transaction Processing).
+In this discussion, we will explore data warehouses in depth, covering fundamental concepts such as OLAP vs. OLTP, the definition of a data warehouse, and BigQuery’s capabilities, partitioning, clustering, best practices and internal workings. Let’s begin with a comparison of OLAP (Online Analytical Processing) and OLTP (Online Transaction Processing).
 
 ### OLAP vs. OLTP: Key Differences and Use Cases
 
@@ -78,6 +78,7 @@ Partitioning helps improve query performance and cost efficiency by dividing a l
 -	Time-based partitioning (e.g., daily, monthly, yearly)
 -	Integer-based partitioning (e.g., user ID ranges)
 -	Ingestion-time partitioning (automatic partitioning based on data arrival time)
+
 Querying a partitioned dataset using the partitioned column significantly reduces query costs.
 
 Clustering further optimizes data retrieval by grouping similar records within partitions. This enhances query speed by reducing the amount of scanned data, making it ideal for large-scale analytical workloads.
@@ -124,9 +125,9 @@ There are scenarios where you must decide between partitioning, clustering, or a
 ### When to Choose Clustering Over Partitioning
 
 Clustering should be preferred in cases where:
-•	Partitions result in small partition sizes (<1GB).
-•	Partitioning exceeds the 4,000 partition limit.
-•	Frequent modifications affect multiple partitions, leading to increased storage overhead and maintenance.
+-	Partitions result in small partition sizes (<1GB).
+-	Partitioning exceeds the 4,000 partition limit.
+-	Frequent modifications affect multiple partitions, leading to increased storage overhead and maintenance.
 
 
 For example, if data ingestion happens hourly, modifying all partitions frequently might be inefficient. In such cases, clustering offers a more effective solution.
@@ -146,54 +147,70 @@ By leveraging partitioning and clustering appropriately, users can significantly
 
 # Best Practices for Cost Reduction
 
-1. Avoid Using SELECT *
+1. Avoid Using SELECT *:
+
 When querying a table, always specify the required column names instead of using SELECT *. BigQuery utilizes columnar storage, meaning data retrieval is optimized when only the necessary columns are queried. Using SELECT * results in reading all columns, which increases data processing costs and query execution time.
 
-2. Estimate Query Costs Before Execution
+2. Estimate Query Costs Before Execution:
+
 Before running a query, always review its estimated cost, which is displayed in the top-right corner of the BigQuery console. This practice helps in avoiding unnecessary expenses, especially when working with large datasets.
 
-3. Use Partitioned and Clustered Tables
+3. Use Partitioned and Clustered Tables:
+
 Partitioning and clustering are effective techniques for optimizing query performance and reducing costs. Partitioning allows for efficient data pruning, while clustering reduces scan operations. We have previously discussed these techniques in detail.
 
-4. Use Streaming Inserts with Caution
+4. Use Streaming Inserts with Caution:
+
 While streaming inserts provide real-time data ingestion, they can significantly increase costs due to additional processing overhead. Consider using batch loading whenever possible, as it is more cost-effective.
 
-5. Materialize Query Results in Stages
+5. Materialize Query Results in Stages:
+
 Instead of repeatedly computing the same intermediate results, consider materializing query results at different stages. If a Common Table Expression (CTE) is used in multiple places, it may be beneficial to materialize the results beforehand to improve efficiency.
 
-6. Leverage BigQuery’s Query Result Caching
+6. Leverage BigQuery’s Query Result Caching:
+
 BigQuery automatically caches query results for 24 hours, allowing repeated queries to be executed at a lower cost. Reusing cached results can significantly reduce compute expenses.
 
 ## Best Practices for Query Performance Optimization
 
-1. Filter on Partitioned or Clustered Columns
+1. Filter on Partitioned or Clustered Columns:
+
 Whenever possible, apply filters to partitioned or clustered columns. This ensures that only relevant subsets of data are processed, thereby minimizing query execution time.
 
-2. Denormalize Data Where Feasible
+2. Denormalize Data Where Feasible:
+
 Instead of relying heavily on normalized relational models, consider denormalization using nested or repeated columns. This approach can reduce join operations and improve query performance by minimizing data shuffling.
 
-3. Minimize Use of External Data Sources
+3. Minimize Use of External Data Sources:
+
 Reading data from Google Cloud Storage or other external sources can increase query latency and costs. Where possible, import data into BigQuery tables before performing intensive queries.
 
-4. Reduce Data Before Performing Joins
+4. Reduce Data Before Performing Joins:
+
 Filtering or aggregating data before executing a JOIN operation helps in reducing the data volume involved in the join, leading to faster performance.
 
-5. Avoid Treating WITH Clauses as Prepared Statements
+5. Avoid Treating WITH Clauses as Prepared Statements:
+
 Common Table Expressions (WITH clauses) are recomputed each time they are referenced in a query. If the same result is needed multiple times, consider materializing intermediate results instead of relying on WITH clauses.
 
-6. Prevent Oversharding of Tables
+6. Prevent Oversharding of Tables:
+
 Excessively sharding tables (splitting them into too many small partitions) can lead to inefficient data retrieval. Balance the number of partitions to avoid unnecessary performance bottlenecks.
 
-7. Avoid Using JavaScript and User-Defined Functions (UDFs)
+7. Avoid Using JavaScript and User-Defined Functions (UDFs):
+
 JavaScript-based UDFs introduce additional processing overhead, often making queries slower. Whenever possible, use built-in SQL functions for better performance.
 
-8. Use Approximate Aggregation Functions
+8. Use Approximate Aggregation Functions:
+
 For large-scale analytics, use approximate aggregation functions like HyperLogLog++ instead of exact calculations. These functions trade minimal accuracy loss for substantial performance gains.
 
-9. Ensure ORDER BY is the Last Operation
+9. Ensure ORDER BY is the Last Operation:
+
 Sorting operations can be computationally expensive. To maximize performance, ensure that the ORDER BY clause is executed only after all filtering and aggregation operations are complete.
 
-10. Optimize Join Patterns
+10. Optimize Join Patterns:
+
 The order in which tables are joined can significantly impact performance. As a best practice:
 -	Place the largest table first, as it gets evenly distributed across nodes.
 -	Follow it with smaller tables (starting with the table having the fewest rows).
@@ -224,10 +241,13 @@ Despite these advantages, separating compute from storage presents a key challen
 ### High-Speed Networking: The Role of Jupiter Network
 
 To mitigate potential network latency, BigQuery employs the Jupiter Network, an ultra-fast networking infrastructure within Google’s data centers. This network provides an astonishing 1 terabyte per second (TBps) bandwidth, enabling seamless and near-instantaneous communication between compute and storage nodes.
+
 The benefits of Jupiter Network include:
-•	Eliminating delays in data retrieval from Colossus to compute nodes.
-•	Supporting large-scale parallel processing without bottlenecks.
-•	Enhancing BigQuery’s scalability and responsiveness for complex analytical workloads.
+
+-	Eliminating delays in data retrieval from Colossus to compute nodes.
+-	Supporting large-scale parallel processing without bottlenecks.
+-	Enhancing BigQuery’s scalability and responsiveness for complex analytical workloads.
+
 By leveraging the Jupiter Network, BigQuery effectively overcomes the limitations of distributed storage and ensures high-speed query execution.
 
 
